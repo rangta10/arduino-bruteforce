@@ -7,7 +7,7 @@
 
 A security demonstration project showing how brute-force attacks work against weak 4-digit PIN authentication systems using an Arduino Nano as a USB HID emulator.
 
-![Demo Screenshot](docs/demo-screenshot.png)
+![Demo Screenshot](docs/images/1.png)
 
 ## ⚠️ Disclaimer
 
