@@ -1,0 +1,139 @@
+/*
+  Arduino Nano Brute Force PIN Generator
+  ========================================
+  
+  This sketch generates all possible 4-digit PINs (0000-9999)
+  and sends them over USB serial connection to a host computer.
+  
+  The Python script on the host reads these PINs and simulates
+  keyboard input to test them against a login interface.
+  
+  Hardware Required:
+  - Arduino Nano (or compatible)
+  - USB cable for serial communication
+  
+  Wiring:
+  - No external wiring needed
+  - Uses built-in USB serial (CH340 chip)
+  
+  Author: Educational Security Project
+  License: MIT
+  
+  DISCLAIMER: Educational purposes only. Only use on systems
+  you own or have permission to test.
+*/
+
+// Configuration
+const int BAUD_RATE = 9600;        // Serial communication speed
+const int DELAY_MS = 1000;         // Delay between PINs (1 second)
+const int TOTAL_PINS = 10000;      // Total 4-digit PINs (0000-9999)
+
+void setup() {
+  // Initialize serial communication
+  Serial.begin(BAUD_RATE);
+  
+  // Wait for serial connection to stabilize
+  // Important for reliable communication with host
+  delay(3000);
+  
+  // Send initialization messages
+  Serial.println("=====================================");
+  Serial.println("  Arduino Nano PIN Generator v1.0");
+  Serial.println("=====================================");
+  Serial.println();
+  Serial.println("Status: Initializing...");
+  Serial.println("Baud Rate: 9600");
+  Serial.println("PIN Range: 0000-9999");
+  Serial.println("Total PINs: 10,000");
+  Serial.println();
+  
+  // Send ready signal (Python script waits for this)
+  Serial.println("READY");
+  Serial.println("Starting PIN generation...");
+  Serial.println();
+}
+
+void loop() {
+  // Generate all 4-digit PINs from 0000 to 9999
+  for (int pin = 0; pin < TOTAL_PINS; pin++) {
+    
+    // Create a character array to hold the PIN string
+    // Size: 4 digits + 1 null terminator = 5 bytes
+    char pinString[5];
+    
+    // Format the PIN with leading zeros using sprintf
+    // Examples:
+    //   0 becomes "0000"
+    //   7 becomes "0007"
+    //   123 becomes "0123"
+    //   9999 stays "9999"
+    sprintf(pinString, "%04d", pin);
+    
+    // Send the formatted PIN over serial to host
+    Serial.println(pinString);
+    
+    // Optional: Send progress updates every 100 PINs
+    if ((pin + 1) % 100 == 0) {
+      Serial.print("Progress: ");
+      Serial.print(pin + 1);
+      Serial.print(" / ");
+      Serial.print(TOTAL_PINS);
+      Serial.print(" (");
+      Serial.print(((pin + 1) * 100) / TOTAL_PINS);
+      Serial.println("%)");
+    }
+    
+    // Wait before sending next PIN
+    // This gives the host time to test the previous PIN
+    delay(DELAY_MS);
+  }
+  
+  // After completing all PINs
+  Serial.println();
+  Serial.println("=====================================");
+  Serial.println("COMPLETE");
+  Serial.println("=====================================");
+  Serial.println("All 10,000 PINs have been tested!");
+  Serial.print("Total time: ~");
+  Serial.print((TOTAL_PINS * DELAY_MS) / 60000);
+  Serial.println(" minutes");
+  Serial.println();
+  Serial.println("Attack simulation finished.");
+  Serial.println("Press RESET button to restart.");
+  
+  // Stop forever - enter infinite loop
+  // Arduino will stay in this state until reset
+  while(true) {
+    delay(10000); // Sleep for 10 seconds at a time
+  }
+}
+
+/*
+  NOTES:
+  
+  1. Serial Communication:
+     - Uses hardware serial (pins 0 and 1)
+     - 9600 baud is reliable and widely compatible
+     - No parity, 8 data bits, 1 stop bit (default)
+  
+  2. PIN Format:
+     - Always 4 digits with leading zeros
+     - Sent as text string (not binary)
+     - Each PIN on new line (println adds \r\n)
+  
+  3. Timing:
+     - 1 second delay per PIN by default
+     - Can be adjusted based on target system response time
+     - Total time for all PINs: ~2.8 hours at 1s per PIN
+  
+  4. Optimization Ideas:
+     - Reduce DELAY_MS for faster testing (if system allows)
+     - Implement "smart" PIN guessing (common patterns first)
+     - Add checksum/validation before sending
+     - Include success/failure feedback from host
+  
+  5. Troubleshooting:
+     - If no output: Check serial monitor baud rate (9600)
+     - If Python can't read: Close serial monitor (port conflict)
+     - If PINs skip: Increase delay or check buffer size
+*/
