@@ -1,0 +1,124 @@
+# Contributing to Arduino Brute Force Demo
+
+Thank you for considering contributing to this educational security project! We welcome contributions that improve the educational value and security awareness aspects of this demonstration.
+
+## Code of Conduct
+
+This project is intended for **educational purposes only**. By contributing, you agree to:
+
+- Use this knowledge responsibly
+- Not promote or facilitate unauthorized access to systems
+- Help improve security awareness and education
+- Be respectful and constructive in discussions
+
+## How to Contribute
+
+### Reporting Bugs
+
+If you find a bug, please open an issue with:
+
+1. **Clear title** describing the problem
+2. **Steps to reproduce** the issue
+3. **Expected behavior** vs actual behavior
+4. **Environment details** (OS, Python version, Arduino board)
+5. **Screenshots** if applicable
+
+### Suggesting Enhancements
+
+We welcome ideas for:
+
+- Additional security demonstrations
+- Improved documentation
+- Better user experience
+- Performance optimizations
+- Educational content improvements
+
+### Pull Requests
+
+1. **Fork** the repository
+2. **Create a branch** (`git checkout -b feature/your-feature`)
+3. **Make your changes** with clear commits
+4. **Test thoroughly** on your system
+5. **Update documentation** if needed
+6. **Submit pull request** with detailed description
+
+### Code Standards
+
+**Python Code:**
+```python
+# Use clear variable names
+# Add comments for complex logic
+# Follow PEP 8 style guide
+# Include error handling
+
+def example_function(param):
+    """
+    Clear docstring explaining function purpose.
+    
+    Args:
+        param: Description of parameter
+        
+    Returns:
+        Description of return value
+    """
+    try:
+        # Implementation
+        return result
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
+```
+
+**Arduino Code:**
+```cpp
+// Use clear comments
+// Keep functions modular
+// Handle edge cases
+
+/*
+  Function description
+*/
+void exampleFunction(int param) {
+    // Implementation
+}
+```
+
+**Documentation:**
+- Use clear, concise language
+- Include examples where helpful
+- Update README.md if adding features
+- Add screenshots for visual features
+
+## Areas for Contribution
+
+### High Priority
+- [ ] Cross-platform testing (Linux, macOS)
+- [ ] Additional security demonstration scenarios
+- [ ] Video tutorial creation
+- [ ] Translation to other languages
+
+### Medium Priority
+- [ ] Web-based version (no Arduino needed)
+- [ ] GUI for Python script
+- [ ] Additional defense mechanisms in HTML
+- [ ] Performance benchmarking
+
+### Low Priority
+- [ ] Support for other Arduino boards (ESP32, etc.)
+- [ ] Bluetooth/WiFi attack variants
+- [ ] Mobile device demonstrations
+
+## Questions?
+
+Feel free to open an issue with the "question" label if you:
+- Need clarification on the code
+- Want to discuss a feature idea
+- Need help getting started
+
+## License
+
+By contributing, you agree that your contributions will be licensed under the MIT License.
+
+---
+
+Thank you for helping make security education more accessible! 🛡️
