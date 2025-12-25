@@ -1,0 +1,136 @@
+# Quick Start Guide - 5 Minutes to Running Demo
+
+Get the Arduino Brute Force demonstration running in under 5 minutes!
+
+## Prerequisites Check
+
+Before starting, verify you have:
+
+- [ ] Arduino Nano + USB cable
+- [ ] Windows PC (10/11)
+- [ ] Arduino IDE installed
+- [ ] Python 3.8+ installed
+
+## Step 1: Hardware (30 seconds)
+
+```
+1. Plug Arduino into USB port
+2. Check Device Manager → Ports
+3. Note your COM port (e.g., COM3)
+```
+
+## Step 2: Arduino Code (2 minutes)
+
+```bash
+# 1. Open Arduino IDE
+# 2. Copy and paste this into a new sketch:
+```
+
+```cpp
+void setup() {
+  Serial.begin(9600);
+  delay(3000);
+  Serial.println("READY");
+}
+
+void loop() {
+  for (int pin = 0; pin <= 9999; pin++) {
+    char pinString[5];
+    sprintf(pinString, "%04d", pin);
+    Serial.println(pinString);
+    delay(1000);
+  }
+  Serial.println("COMPLETE");
+  while(true) { delay(10000); }
+}
+```
+
+```bash
+# 3. Tools → Board → Arduino Nano
+# 4. Tools → Processor → ATmega328P (Old Bootloader)
+# 5. Tools → Port → COM3 (your port)
+# 6. Click Upload (arrow button)
+# 7. Wait for "Done uploading"
+```
+
+## Step 3: Python Setup (1 minute)
+
+```bash
+# Open PowerShell/CMD
+pip install pyserial pynput
+
+# Test it
+python -c "import serial, pynput; print('OK')"
+```
+
+## Step 4: Download Files (30 seconds)
+
+Save these two files:
+
+**bruteforce.py** - Main script (already in your files)
+
+**bruteforce_test.html** - Login page (already in your files)
+
+## Step 5: Run Demo (1 minute)
+
+```bash
+# 1. Double-click bruteforce_test.html (opens in browser)
+
+# 2. Run Python script
+python bruteforce.py
+
+# 3. When prompted (10 second countdown):
+#    - Click on browser window
+#    - Click in PIN input field (4 dots)
+#    - Wait for attack to start
+
+# 4. Watch it crack PIN 0011!
+```
+
+## Expected Output
+
+```
+[00001] 🔑 Trying PIN: 0000  |  Speed: 0.33/sec  |  ETA: 8.3 hrs
+[00002] 🔑 Trying PIN: 0001  |  Speed: 0.33/sec  |  ETA: 8.2 hrs
+...
+[00012] 🔑 Trying PIN: 0011  |  Speed: 0.30/sec  |  ETA: 8.1 hrs
+
+✅ Login page shows "Access Granted!"
+```
+
+## Troubleshooting
+
+**Arduino not uploading?**
+```
+→ Try "ATmega328P" (without Old Bootloader)
+```
+
+**COM port error?**
+```
+→ Close Arduino IDE Serial Monitor
+→ Check Device Manager for correct port
+```
+
+**Python imports fail?**
+```
+pip install --upgrade pyserial pynput
+```
+
+**Typing doesn't work?**
+```
+→ Click directly in PIN input field
+→ Make sure browser window has focus
+```
+
+## What's Next?
+
+✅ Try changing PIN in HTML (search for `CORRECT_PIN`)  
+✅ Modify timing in Python (`DELAY_AFTER_ENTER`)  
+✅ Read [SECURITY_LESSONS.md](SECURITY_LESSONS.md) to learn defenses  
+✅ Check [SETUP.md](SETUP.md) for detailed explanations  
+
+---
+
+**That's it! You're now running a live brute force demonstration. 🚀**
+
+**Security Reminder:** This demonstrates why 4-digit PINs are insecure. Real systems should use longer passwords, rate limiting, and multi-factor authentication!

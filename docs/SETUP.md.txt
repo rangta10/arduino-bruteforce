@@ -1,0 +1,453 @@
+# Detailed Setup Guide
+
+This guide walks you through setting up the Arduino Brute Force demonstration from scratch.
+
+## Table of Contents
+
+1. [Hardware Setup](#1-hardware-setup)
+2. [Arduino IDE Installation](#2-arduino-ide-installation)
+3. [Arduino Driver Installation](#3-arduino-driver-installation)
+4. [Upload Arduino Sketch](#4-upload-arduino-sketch)
+5. [Python Environment Setup](#5-python-environment-setup)
+6. [Testing the Setup](#6-testing-the-setup)
+7. [Running the Demonstration](#7-running-the-demonstration)
+
+---
+
+## 1. Hardware Setup
+
+### Required Hardware
+- **Arduino Nano** (or compatible board)
+- **USB Mini-B or Micro-USB cable** (depends on your Nano version)
+- **Windows PC** (Windows 10 or 11 recommended)
+
+### Physical Connection
+1. Take your Arduino Nano out of packaging
+2. Connect USB cable to Arduino Nano
+3. Connect other end to your computer's USB port
+4. **Green LED** should light up (power indicator)
+5. **Orange LED** may blink (indicates bootloader is working)
+
+### Verify Connection
+1. Open **Device Manager** (Win+X → Device Manager)
+2. Expand **Ports (COM & LPT)**
+3. Look for:
+   - "USB-SERIAL CH340 (COM3)" ← Most common for clone Nanos
+   - "Arduino Nano (COM#)"
+   - "USB Serial Port (COM#)"
+4. Note your COM port number (e.g., COM3)
+
+**Troubleshooting:**
+- ❌ No COM port appears → Driver issue (see Section 3)
+- ❌ "Unknown Device" → Driver not installed
+- ❌ Yellow exclamation mark → Driver problem
+
+---
+
+## 2. Arduino IDE Installation
+
+### Option A: Arduino IDE 2.x (Recommended)
+
+1. Download from: https://www.arduino.cc/en/software
+2. Click **"Windows Win 10 and newer"**
+3. Run the installer (`arduino-ide-*.exe`)
+4. Follow installation wizard
+5. Launch Arduino IDE 2.0
+
+### Option B: Arduino IDE 1.8.x (Classic)
+
+1. Download from: https://www.arduino.cc/en/software
+2. Scroll to **"Legacy IDE (1.8.X)"**
+3. Download Windows installer
+4. Install and launch
+
+### First Launch Configuration
+
+1. Open Arduino IDE
+2. Go to **File → Preferences**
+3. Check these settings:
+   - Compiler warnings: "None" or "Default"
+   - Upload verbose: Checked (helpful for debugging)
+4. Click **OK**
+
+---
+
+## 3. Arduino Driver Installation
+
+### For CH340/CH341 Chips (Most Clone Nanos)
+
+If Device Manager shows "Unknown Device" or no COM port:
+
+1. Download CH340 driver:
+   - Official: http://www.wch-ic.com/downloads/CH341SER_ZIP.html
+   - Alternative: Search "CH340 driver Windows"
+
+2. Extract the ZIP file
+
+3. Run `SETUP.EXE` as Administrator
+
+4. Click **INSTALL**
+
+5. Restart computer
+
+6. Reconnect Arduino → Check Device Manager again
+
+### For FTDI Chips (Original Nanos)
+
+If your Nano has FTDI chip:
+
+1. Download from: https://ftdichip.com/drivers/vcp-drivers/
+2. Install the Windows driver
+3. Restart if prompted
+
+### Verify Driver Installation
+
+```
+Device Manager → Ports (COM & LPT)
+Should show: USB-SERIAL CH340 (COM3) ✓
+```
+
+---
+
+## 4. Upload Arduino Sketch
+
+### Step-by-Step Upload
+
+1. **Open the Sketch**
+   ```
+   File → Open → bruteforce_generator.ino
+   ```
+
+2. **Select Board**
+   ```
+   Tools → Board → Arduino AVR Boards → Arduino Nano
+   ```
+
+3. **Select Processor** (Important!)
+   ```
+   Tools → Processor → ATmega328P (Old Bootloader)
+   
+   Note: Try "Old Bootloader" first. If upload fails, 
+   try "ATmega328P" (without Old Bootloader)
+   ```
+
+4. **Select COM Port**
+   ```
+   Tools → Port → COM3 (or your port number)
+   ```
+
+5. **Upload**
+   - Click **Upload button** (→ arrow icon)
+   - Or press **Ctrl+U**
+   - Wait for "Done uploading" message
+
+### Expected Output
+
+```
+Sketch uses 1834 bytes (5%) of program storage space.
+Global variables use 192 bytes (9%) of dynamic memory.
+Done uploading.
+```
+
+### Verify Upload Success
+
+1. Open **Serial Monitor**:
+   - Tools → Serial Monitor
+   - Or press **Ctrl+Shift+M**
+
+2. Set baud rate to **9600**
+
+3. You should see:
+   ```
+   =====================================
+     Arduino Nano PIN Generator v1.0
+   =====================================
+   
+   Status: Initializing...
+   Baud Rate: 9600
+   PIN Range: 0000-9999
+   Total PINs: 10,000
+   
+   READY
+   Starting PIN generation...
+   
+   0000
+   0001
+   0002
+   ...
+   ```
+
+### Upload Troubleshooting
+
+| Error | Solution |
+|-------|----------|
+| `avrdude: stk500_recv(): programmer is not responding` | Try "Old Bootloader" processor |
+| `avrdude: ser_open(): can't open device` | Close Serial Monitor, try different port |
+| `Problem uploading to board` | Check USB cable, try different USB port |
+| Permission denied | Run Arduino IDE as Administrator |
+
+---
+
+## 5. Python Environment Setup
+
+### Install Python
+
+1. Download Python 3.8+ from: https://www.python.org/downloads/
+
+2. **Important:** Check ✅ **"Add Python to PATH"** during installation
+
+3. Verify installation:
+   ```bash
+   python --version
+   # Should show: Python 3.8.x or higher
+   ```
+
+### Install Required Packages
+
+Open **PowerShell** or **Command Prompt**:
+
+```bash
+# Navigate to project folder
+cd path\to\arduino-bruteforce-demo
+
+# Install dependencies
+pip install pyserial pynput
+
+# Or use requirements.txt
+pip install -r requirements.txt
+```
+
+### Verify Installation
+
+```bash
+python -c "import serial; print('pyserial:', serial.__version__)"
+python -c "import pynput; print('pynput: OK')"
+```
+
+Expected output:
+```
+pyserial: 3.5
+pynput: OK
+```
+
+### Package Details
+
+**pyserial** (Serial Communication)
+- Purpose: Talk to Arduino over USB
+- Usage: Read PIN numbers from Arduino
+- Docs: https://pyserial.readthedocs.io/
+
+**pynput** (Keyboard Control)
+- Purpose: Simulate keyboard typing
+- Usage: Type PINs into login page
+- Docs: https://pynput.readthedocs.io/
+
+---
+
+## 6. Testing the Setup
+
+### Test 1: Arduino Serial Output
+
+```bash
+# Close Arduino IDE Serial Monitor first!
+python -c "import serial; s=serial.Serial('COM3', 9600); print(s.readline().decode())"
+```
+
+Should print PIN like: `0042`
+
+### Test 2: Python Serial Reading
+
+```python
+# test_serial.py
+import serial
+import time
+
+ser = serial.Serial('COM3', 9600, timeout=1)
+time.sleep(2)
+
+print("Reading 10 PINs from Arduino:")
+for i in range(10):
+    pin = ser.readline().decode().strip()
+    print(f"  PIN {i+1}: {pin}")
+
+ser.close()
+```
+
+Run: `python test_serial.py`
+
+### Test 3: Keyboard Simulation
+
+```python
+# test_keyboard.py
+from pynput.keyboard import Controller
+import time
+
+keyboard = Controller()
+
+print("Will type 'TEST' in 3 seconds...")
+print("Click on Notepad now!")
+time.sleep(3)
+
+keyboard.type("TEST")
+print("If you see 'TEST' in Notepad, keyboard works! ✓")
+```
+
+Run: `python test_keyboard.py`
+
+---
+
+## 7. Running the Demonstration
+
+### Preparation Checklist
+
+- [ ] Arduino connected and code uploaded
+- [ ] Python packages installed
+- [ ] Login page HTML opened in browser
+- [ ] Login page showing PIN input field
+- [ ] Serial Monitor closed (Python needs COM port)
+
+### Step-by-Step Execution
+
+**Step 1: Open Login Page**
+```bash
+# Double-click: web/bruteforce_test.html
+# Or drag into browser
+```
+
+**Step 2: Start Attack Script**
+```bash
+python bruteforce.py
+```
+
+**Step 3: Follow Instructions**
+```
+[1] 🔍 Searching for Arduino...
+    ✅ Found on COM3
+
+[2] 🔌 Connecting...
+    ✅ Connected
+
+[3] ⏳ Waiting for READY...
+    ✅ Arduino ready
+
+[4] 🎯 ATTACK PREPARATION
+    
+    1. Click on LOGIN PAGE
+    2. Click on PIN INPUT FIELD
+    3. Starting in 10 seconds...
+```
+
+**Step 4: Give Input Focus**
+- Click on browser window with login page
+- Click directly in the PIN input field (4 dots)
+- Wait for countdown to finish
+
+**Step 5: Watch Attack Execute**
+```
+[00001] 🔑 Trying: 0000 | Speed: 0.33/sec | ETA: 8.3 hrs
+[00002] 🔑 Trying: 0001 | Speed: 0.33/sec | ETA: 8.2 hrs
+...
+[00012] 🔑 Trying: 0011 | Speed: 0.30/sec | ETA: 8.1 hrs
+
+✅ Access Granted!
+```
+
+### Success Indicators
+
+✅ Login page shows "Access Granted" in green  
+✅ Dashboard displays with PIN 0011  
+✅ PowerShell shows attack statistics  
+✅ Failed attempts counter shows 11  
+
+---
+
+## Common Issues & Solutions
+
+### Arduino Issues
+
+**Issue:** Arduino not found
+```bash
+Solution:
+1. Check Device Manager for COM port
+2. Close Arduino IDE Serial Monitor
+3. Try different USB port
+4. Reinstall CH340 driver
+```
+
+**Issue:** PINs not sending
+```bash
+Solution:
+1. Open Arduino Serial Monitor (9600 baud)
+2. Press RESET button on Arduino
+3. Should see PIN numbers scrolling
+4. If not, re-upload sketch
+```
+
+### Python Issues
+
+**Issue:** `ModuleNotFoundError: No module named 'serial'`
+```bash
+Solution: pip install pyserial
+```
+
+**Issue:** `PermissionError: [Errno 13] Permission denied`
+```bash
+Solution: 
+1. Close Arduino IDE Serial Monitor
+2. Run Python as Administrator
+3. Check COM port availability
+```
+
+**Issue:** Keyboard typing doesn't work
+```bash
+Solution:
+1. Ensure login page has focus (click on it)
+2. Ensure PIN input field is active (click in field)
+3. Check if antivirus is blocking pynput
+4. Run script as Administrator
+```
+
+### Login Page Issues
+
+**Issue:** Page doesn't respond to typed PINs
+```bash
+Solution:
+1. Refresh page (F5)
+2. Ensure JavaScript is enabled
+3. Try different browser (Chrome recommended)
+4. Check browser console for errors (F12)
+```
+
+**Issue:** Attack too fast/slow
+```bash
+Solution:
+Edit bruteforce.py:
+
+DELAY_AFTER_ENTER = 3.0  # Increase if too fast
+DELAY_AFTER_ENTER = 1.5  # Decrease if too slow
+```
+
+---
+
+## Next Steps
+
+After successful setup:
+
+1. ✅ Try changing the correct PIN in HTML file
+2. ✅ Modify timing to speed up/slow down attack
+3. ✅ Read SECURITY_LESSONS.md to understand defenses
+4. ✅ Experiment with rate limiting in the HTML
+5. ✅ Share with others for educational purposes
+
+## Support
+
+If you encounter issues not covered here:
+
+1. Check the [main README.md](README.md)
+2. Open an issue on GitHub
+3. Review Arduino/Python documentation
+4. Double-check all connections and settings
+
+---
+
+**Setup Complete! You're ready to run the demonstration. 🎉**
