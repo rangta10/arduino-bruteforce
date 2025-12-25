@@ -1,4 +1,4 @@
-# Arduino Nano Brute Force Demo 🔐
+# Arduino Nano Brute Force 🔐
 
 [![Educational Purpose](https://img.shields.io/badge/Purpose-Educational-yellow.svg)](https://github.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
