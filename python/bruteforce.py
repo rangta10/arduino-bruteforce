@@ -25,20 +25,20 @@ def find_arduino():
         print("    ❌ No COM ports found!")
         return None
     
-    print("    📋 Available COM ports:")
+    print("     Available COM ports:")
     for port in ports:
         print(f"       • {port.device} - {port.description}")
         
         # Check if it looks like Arduino
         if any(keyword in port.description.upper() for keyword in ['ARDUINO', 'CH340', 'CH341', 'USB-SERIAL', 'FTDI']):
-            print(f"    ✅ Arduino detected on: {port.device}\n")
+            print(f"     Arduino detected on: {port.device}\n")
             return port.device
     
     return None
 
 def manual_port_entry():
     """Let user manually enter COM port"""
-    print("\n❓ Arduino not auto-detected.")
+    print("\n Arduino not auto-detected.")
     print("   Check Device Manager (Win+X → Device Manager → Ports)")
     print("   Look for 'USB-SERIAL CH340 (COM3)' or similar\n")
     
@@ -53,7 +53,7 @@ def main():
     print("=" * 70)
     print("           ARDUINO NANO BRUTE FORCE - VM ATTACK")
     print("=" * 70)
-    print("\n⚠️  EDUCATIONAL PURPOSE ONLY - Test on your own systems!")
+    print("\n  EDUCATIONAL PURPOSE ONLY - Test on your own systems!")
     print("   Host: Windows 11 | Target: Windows 10 VM\n")
     
     # Step 1: Find Arduino
@@ -63,15 +63,15 @@ def main():
         arduino_port = manual_port_entry()
     
     # Step 2: Connect to Arduino
-    print(f"[2] 🔌 Connecting to {arduino_port}...")
+    print(f"[2]  Connecting to {arduino_port}...")
     
     try:
         ser = serial.Serial(arduino_port, BAUD_RATE, timeout=1)
-        print(f"    ✅ Connected successfully!")
-        print(f"    📊 Baud rate: {BAUD_RATE}\n")
+        print(f"     Connected successfully!")
+        print(f"     Baud rate: {BAUD_RATE}\n")
     except serial.SerialException as e:
-        print(f"    ❌ Connection failed: {e}")
-        print("\n💡 Troubleshooting:")
+        print(f"     Connection failed: {e}")
+        print("\n Troubleshooting:")
         print("   1. Is Arduino plugged in?")
         print("   2. Close Arduino IDE (it locks the COM port)")
         print("   3. Check correct COM port in Device Manager")
@@ -80,7 +80,7 @@ def main():
         sys.exit(1)
     
     # Step 3: Wait for Arduino to initialize
-    print("[3] ⏳ Waiting for Arduino to initialize...")
+    print("[3]  Waiting for Arduino to initialize...")
     time.sleep(3)
     ser.reset_input_buffer()
     
@@ -94,7 +94,7 @@ def main():
             if line:
                 print(f"    Arduino: {line}")
             if "READY" in line:
-                print("    ✅ Arduino is ready!\n")
+                print("     Arduino is ready!\n")
                 break
     
     # Step 4: Initialize keyboard controller
@@ -102,9 +102,9 @@ def main():
     
     # Step 5: Prepare for attack
     print("=" * 70)
-    print("                    🎯 ATTACK PREPARATION")
+    print("                     ATTACK PREPARATION")
     print("=" * 70)
-    print("\n📝 INSTRUCTIONS:")
+    print("\n INSTRUCTIONS:")
     print("   1. Make sure your LOGIN PAGE is running")
     print("   2. The LOGIN PAGE should be LOCKED (showing PIN entry screen)")
     print("   3. CLICK on the LOGIN PAGE to give it focus")
@@ -112,13 +112,13 @@ def main():
     print("   5. You have 10 seconds to do this!\n")
     
     for i in range(10, 0, -1):
-        print(f"   ⏰ Starting in {i} seconds... (Click LOGIN PIN field NOW!)", end='\r')
+        print(f"    Starting in {i} seconds... (Click LOGIN PIN field NOW!)", end='\r')
         time.sleep(1)
     
     print("\n\n" + "=" * 70)
-    print("                  ⚡ ATTACK IN PROGRESS ⚡")
+    print("                   ATTACK IN PROGRESS ")
     print("=" * 70)
-    print("\n💡 Press Ctrl+C to stop the attack at any time\n")
+    print("\n Press Ctrl+C to stop the attack at any time\n")
     print("-" * 70)
     
     # Step 6: Start brute force
@@ -135,7 +135,7 @@ def main():
                 # Check if complete
                 if "COMPLETE" in pin:
                     print("\n\n" + "=" * 70)
-                    print("              ✅ ALL PINS TESTED!")
+                    print("               ALL PINS TESTED!")
                     print("=" * 70)
                     break
                 
@@ -149,7 +149,7 @@ def main():
                     eta_minutes = eta_seconds / 60
                     
                     # Display progress
-                    print(f"[{attempt:05d}] 🔓 Trying PIN: {pin}  |  "
+                    print(f"[{attempt:05d}]  Trying PIN: {pin}  |  "
                           f"Speed: {rate:.2f}/sec  |  "
                           f"ETA: {eta_minutes:.1f} min")
                     
@@ -168,7 +168,7 @@ def main():
                     last_pin = pin
     
     except KeyboardInterrupt:
-        print("\n\n⚠️  ATTACK STOPPED BY USER (Ctrl+C pressed)")
+        print("\n\n  ATTACK STOPPED BY USER (Ctrl+C pressed)")
     
     except Exception as e:
         print(f"\n\n❌ ERROR OCCURRED: {e}")
@@ -180,7 +180,7 @@ def main():
         # Display final statistics
         elapsed = time.time() - start_time
         print("\n" + "=" * 70)
-        print("                   📊 ATTACK STATISTICS")
+        print("                    ATTACK STATISTICS")
         print("=" * 70)
         print(f"   Total attempts:      {attempt:,}")
         print(f"   Last PIN tried:      {last_pin if last_pin else 'N/A'}")
@@ -193,10 +193,11 @@ def main():
             print(f"   Est. total time:     {estimated_total:.1f} minutes for all 10,000 PINs")
         
         print("=" * 70)
-        print("\n💡 Security Lesson: This demonstrates why short PINs are insecure!")
+        print("\n  Security Lesson: This demonstrates why short PINs are insecure!")
         print("   Defense: Use longer PINs, rate limiting, account lockouts\n")
         
         input("Press Enter to exit...")
 
 if __name__ == "__main__":
+
     main()
