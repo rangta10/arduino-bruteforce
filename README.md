@@ -1,9 +1,6 @@
-# Arduino Nano Brute Force 🔐
+# Arduino Nano Brute Force 
 
-[![Educational Purpose](https://img.shields.io/badge/Purpose-Educational-yellow.svg)](https://github.com)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Arduino](https://img.shields.io/badge/Arduino-Nano-00979D.svg)](https://www.arduino.cc/)
-[![Python](https://img.shields.io/badge/Python-3.8+-3776AB.svg)](https://www.python.org/)
+
 
 A security demonstration project showing how brute-force attacks work against weak 4-digit PIN authentication systems using an Arduino Nano as a USB HID emulator.
 
@@ -11,13 +8,13 @@ A security demonstration project showing how brute-force attacks work against we
 ![Demo Screenshot](docs/images/2.png)
 ![Demo Screenshot](docs/images/3.png)
 
-## ⚠️ Disclaimer
+##  Disclaimer
 
 **FOR EDUCATIONAL PURPOSES ONLY**
 
 This project is designed to demonstrate security vulnerabilities in weak authentication systems. Only use this on systems you own or have explicit permission to test. Unauthorized access to computer systems is illegal.
 
-## 🎯 Project Overview
+##  Project Overview
 
 This demonstration consists of three components:
 
@@ -34,7 +31,7 @@ Arduino Nano → Serial USB → Python Script → Keyboard Simulation → Login 
 
 The attack succeeds on PIN `0011` after approximately 12 attempts, demonstrating why short PINs are insecure.
 
-## 📋 Requirements
+##  Requirements
 
 ### Hardware
 - **Arduino Nano** (or compatible board with USB serial)
@@ -48,7 +45,7 @@ The attack succeeds on PIN `0011` after approximately 12 attempts, demonstrating
   - `pyserial` - Serial communication
   - `pynput` - Keyboard control
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### 1. Clone the Repository
 
@@ -65,7 +62,7 @@ cd arduino-bruteforce-demo
 4. Select **Tools → Port → COM# (Your Arduino Port)**
 5. Upload the sketch (Ctrl+U)
 
-### 3. Setup Python Environment
+### 3. Set up Python Environment
 
 ```bash
 # Install required packages
@@ -87,11 +84,11 @@ python bruteforce.py
 
 # Step 3: Follow on-screen instructions
 # - Click on the login page PIN input field
-# - Wait for attack to start (10 second countdown)
+# - Wait for attack to start (10-second countdown)
 # - Watch as it tries PINs automatically
 ```
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 arduino-bruteforce-demo/
@@ -115,7 +112,7 @@ arduino-bruteforce-demo/
 └── LICENSE                          # MIT License
 ```
 
-## 🎮 Usage Example
+##  Usage Example
 
 ```bash
 $ python bruteforce.py
@@ -124,54 +121,54 @@ $ python bruteforce.py
            ARDUINO NANO BRUTE FORCE - VM ATTACK
 ======================================================================
 
-⚠️  EDUCATIONAL PURPOSE ONLY - Test on your own systems!
+  EDUCATIONAL PURPOSE ONLY - Test on your own systems!
    Host: Windows 11 | Target: Windows 10 VM
 
-[1] 🔍 Searching for Arduino Nano...
-    📋 Available COM ports:
+[1]  Searching for Arduino Nano...
+     Available COM ports:
        • COM3 - USB-SERIAL CH340 (COM3)
-    ✅ Arduino detected on: COM3
+     Arduino detected on: COM3
 
 [2] 🔌 Connecting to COM3...
-    ✅ Connected successfully!
-    📊 Baud rate: 9600
+     Connected successfully!
+     Baud rate: 9600
 
-[3] ⏳ Waiting for Arduino to initialize...
-    Waiting for READY signal...
+[3]  Waiting for Arduino to initialize...
+    Waiting for the READY signal...
     Arduino: READY
-    ✅ Arduino is ready!
+     Arduino is ready!
 
 ======================================================================
-                    🎯 ATTACK PREPARATION
+                     ATTACK PREPARATION
 ======================================================================
 
-📢 INSTRUCTIONS:
+ INSTRUCTIONS:
    1. Make sure your LOGIN PAGE is running
    2. The LOGIN PAGE should be LOCKED (showing PIN entry screen)
    3. CLICK on the LOGIN PAGE to give it focus
    4. CLICK ON THE PIN INPUT FIELD (where you type the PIN)
    5. You have 10 seconds to do this!
 
-   ⏰ Starting in 1 seconds... (Click LOGIN PIN field NOW!)
+    Starting in 1 second... (Click the LOGIN PIN field NOW!)
 
 ======================================================================
-                  ⚡ ATTACK IN PROGRESS ⚡
+                    ATTACK IN PROGRESS 
 ======================================================================
 
-💡 Press Ctrl+C to stop the attack at any time
+ Press Ctrl+C to stop the attack at any time
 
 ----------------------------------------------------------------------
-[00001] 🔑 Trying PIN: 0000  |  Speed: 0.33/sec  |  ETA: 502.1 min
-[00002] 🔑 Trying PIN: 0001  |  Speed: 0.33/sec  |  ETA: 501.4 min
-[00003] 🔑 Trying PIN: 0002  |  Speed: 0.33/sec  |  ETA: 500.8 min
+[00001]  Trying PIN: 0000  |  Speed: 0.33/sec  |  ETA: 502.1 min
+[00002]  Trying PIN: 0001  |  Speed: 0.33/sec  |  ETA: 501.4 min
+[00003]  Trying PIN: 0002  |  Speed: 0.33/sec  |  ETA: 500.8 min
 ...
-[00011] 🔑 Trying PIN: 0010  |  Speed: 0.30/sec  |  ETA: 547.4 min
-[00012] 🔑 Trying PIN: 0011  |  Speed: 0.30/sec  |  ETA: 551.9 min
+[00011]  Trying PIN: 0010  |  Speed: 0.30/sec  |  ETA: 547.4 min
+[00012]  Trying PIN: 0011  |  Speed: 0.30/sec  |  ETA: 551.9 min
 
-✅ Access Granted! (PIN: 0011 found after 12 attempts)
+ Access Granted! (PIN: 0011 found after 12 attempts)
 ```
 
-## 🔧 Configuration
+##  Configuration
 
 Edit timing settings in `python/bruteforce.py`:
 
@@ -183,7 +180,7 @@ DELAY_AFTER_ENTER = 3.0        # Wait time after pressing Enter
 # =======================================
 ```
 
-## 🛡️ Security Lessons
+##  Security Lessons
 
 This demonstration teaches several important security concepts:
 
@@ -195,14 +192,14 @@ This demonstration teaches several important security concepts:
 - **Predictable Pattern**: Sequential testing (0000, 0001, 0002...)
 
 ### Real-World Defenses
-✅ **Use Longer PINs/Passwords**: 6+ digits exponentially increases security  
-✅ **Implement Rate Limiting**: Slow down attackers (e.g., 3-second delays)  
-✅ **Account Lockouts**: Temporary lockout after 3-5 failed attempts  
-✅ **Multi-Factor Authentication (MFA)**: Require second verification method  
-✅ **CAPTCHA**: Detect and prevent automated attacks  
-✅ **Monitoring & Alerts**: Log suspicious activity patterns  
+ **Use Longer PINs/Passwords**: 6+ digits exponentially increases security  
+ **Implement Rate Limiting**: Slow down attackers (e.g., 3-second delays)  
+ **Account Lockouts**: Temporary lockout after 3-5 failed attempts  
+ **Multi-Factor Authentication (MFA)**: Require second verification method  
+ **CAPTCHA**: Detect and prevent automated attacks  
+ **Monitoring & Alerts**: Log suspicious activity patterns  
 
-## 📊 Attack Statistics
+##  Attack Statistics
 
 For the test PIN `0011`:
 - **Expected Attempts**: 12 (worst case: 10,000)
@@ -214,7 +211,7 @@ For all 10,000 PINs:
 - **Estimated Time**: ~8.3 hours at 0.33 attempts/sec
 - **Faster with optimization**: ~1-2 hours possible
 
-## 🔍 Troubleshooting
+##  Troubleshooting
 
 ### Arduino Not Detected
 ```bash
@@ -237,12 +234,12 @@ pip install --upgrade pyserial pynput
 ```
 
 ### Attack Not Working
-- Ensure login page has focus (click on it)
+- Ensure the login page has focus (click on it)
 - Ensure PIN input field is active (click in the input box)
 - Check timing delays (might need adjustment)
 - Verify Arduino is sending PINs (check serial monitor)
 
-## 🤝 Contributing
+##  Contributing
 
 Contributions are welcome! Please feel free to submit pull requests or open issues for:
 - Bug fixes
@@ -250,24 +247,22 @@ Contributions are welcome! Please feel free to submit pull requests or open issu
 - Documentation improvements
 - Additional security demonstrations
 
-## 📄 License
+##  License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 📚 Educational Resources
+##  Educational Resources
 
 - [OWASP Authentication Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html)
 - [NIST Digital Identity Guidelines](https://pages.nist.gov/800-63-3/)
 - [Arduino Serial Communication](https://www.arduino.cc/reference/en/language/functions/communication/serial/)
 - [Python Serial Documentation](https://pyserial.readthedocs.io/)
 
-## 👨‍💻 Author
+##  Author
 
-Created for educational and security awareness purposes.
+Created for educational and security awareness purposes only.
 
-## ⭐ Star This Repo
 
-If you found this educational, please consider giving it a star! It helps others discover this security demonstration.
 
 ---
 
